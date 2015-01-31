@@ -40,8 +40,4 @@ class RhubarbAppTest < Test::Unit::TestCase
     assert_equal "a7_d", Rhubarb.to_underscore("a7D")
   end
 
-  def test_instance_variables_available_in_view
-
-  end
-
 end
