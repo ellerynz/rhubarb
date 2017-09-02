@@ -22,7 +22,13 @@ module Rhubarb
 
         begin
           text = controller.send(action)
-          [200, { "Content-Type" => "text/html" }, [text]]
+          response = controller.get_response
+
+          if response
+            [response.status, response.headers, [response.body].flatten]
+          else
+            [200, { "Content-Type" => "text/html" }, [text]]
+          end
         rescue => e
           [500, { "Content-Type" => "text/html" }, [e.message]]
         end
