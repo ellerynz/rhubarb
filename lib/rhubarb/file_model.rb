@@ -31,6 +31,16 @@ module Rhubarb
         end
       end
 
+      def self.find_by(attrs)
+        return nil if attrs.respond_to?(:[])
+
+        all.find do |model|
+          attrs.all? do |key, value|
+            model[key] == value
+          end
+        end
+      end
+
       def self.all
         files.map { |f| FileModel.new(f) }
       end
