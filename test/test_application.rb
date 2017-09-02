@@ -15,7 +15,7 @@ class TestApp < Rhubarb::Application
   end
 end
 
-class RhubarbAppTest < Test::Unit::TestCase
+class RhubarbAppTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
