@@ -3,6 +3,7 @@ require "rhubarb/array"
 require "rhubarb/routing"
 require "rhubarb/util"
 require "rhubarb/dependencies"
+require "rhubarb/file_model"
 require "rhubarb/controller"
 
 module Rhubarb
@@ -10,7 +11,6 @@ module Rhubarb
   class Application
 
     def call(env)
-      # Ghetto hax
       case env["PATH_INFO"]
       when "/"
         return [302, { "Content-Type" => "text/html" }, [QuotesController.new(env).a_quote]]
@@ -23,8 +23,8 @@ module Rhubarb
         begin
           text = controller.send(action)
           [200, { "Content-Type" => "text/html" }, [text]]
-        rescue
-          [500, { "Content-Type" => "text/html" }, ["Shit hit the fan yo!"]]
+        rescue => e
+          [500, { "Content-Type" => "text/html" }, [e.message]]
         end
       end
 
