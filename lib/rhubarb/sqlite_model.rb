@@ -11,6 +11,38 @@ module Rhubarb
         @hash = data
       end
 
+      def [](name)
+        @hash[name.to_s]
+      end
+
+      def []=(name, value)
+        @hash[name.to_s] = value
+      end
+
+      def save!
+        unless @hash["id"]
+          self.class.create
+          return true
+        end
+
+        fields =
+          @hash.map do |k, v|
+            "#{k}=#{self.class.to_sql(v)}"
+          end.join(",")
+
+        DB.execute <<-SQL
+          UPDATE #{self.class.table}
+          SET #{fields}
+          WHERE id = #{@hash["id"]}
+        SQL
+
+        true
+      end
+
+      def save
+        self.save! rescue false
+      end
+
       def self.to_sql(val)
         case val
         when NilClass
@@ -22,6 +54,18 @@ module Rhubarb
         else
           raise "Can't change #{val.class} to SQL!"
         end
+      end
+
+      def self.find(id)
+        row =
+          DB.execute <<-SQL
+            SELECT #{schema.keys.join(",")}
+            FROM #{table}
+            WHERE id = #{id.to_i}
+          SQL
+
+        data = Hash[schema.keys.zip(row[0])]
+        self.new(data)
       end
 
       def self.create(values)
@@ -40,7 +84,7 @@ module Rhubarb
         data = Hash[keys.zip(raw_vals)]
         sql = "SELECT last_insert_rowid();"
         data["id"] = DB.execute(sql)[0][0]
-        data
+        self.new(data)
       end
 
       def self.count
