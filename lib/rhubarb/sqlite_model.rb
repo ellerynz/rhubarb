@@ -43,6 +43,26 @@ module Rhubarb
         self.save! rescue false
       end
 
+      def method_missing(name, *args)
+        if @hash.keys.include?(name.to_s)
+          self.class.class_eval do
+            define_method(name) do
+              self[name]
+            end
+          end
+          self.send(name)
+        end
+
+        if name.to_s[-1] == "="
+          self.class.class_eval do
+            define_method(name) do |value|
+              self[name.to_s.chomp("=")] = value
+            end
+          end
+          self.send(name, args[0])
+        end
+      end
+
       def self.to_sql(val)
         case val
         when NilClass
