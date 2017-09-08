@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "rack", "~> 1.6"
   spec.add_runtime_dependency "erubis", "~> 2.7"
   spec.add_runtime_dependency "multi_json", "~> 1.12"
+  spec.add_runtime_dependency "sqlite3", "~> 1.3"
 end

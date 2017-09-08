@@ -4,6 +4,7 @@ require "rhubarb/routing"
 require "rhubarb/util"
 require "rhubarb/dependencies"
 require "rhubarb/file_model"
+require "rhubarb/sqlite_model"
 require "rhubarb/controller"
 
 module Rhubarb
