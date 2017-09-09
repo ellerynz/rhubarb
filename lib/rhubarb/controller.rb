@@ -8,6 +8,27 @@ module Rhubarb
 
     def initialize(env)
       @env = env
+      @routing_params = {}
+    end
+
+    def dispatch(action, routing_params = {})
+      @routing_params = routing_params
+      text = self.send(action)
+      response = self.get_response
+
+      if response
+        [response.status, response.headers, [response.body].flatten]
+      else
+        [200, { "Content-Type" => "text/html" }, [text]]
+      end
+
+    rescue => e
+      puts e.backtrace
+      [500, { "Content-Type" => "text/html" }, ["#{e.class}\n#{e.message}"]]
+    end
+
+    def self.action(act, rp = {})
+      proc { |e| self.new(e).dispatch(act, rp) }
     end
 
     def env
@@ -19,7 +40,7 @@ module Rhubarb
     end
 
     def params
-      request.params
+      request.params.merge(@routing_params)
     end
 
     def response(text, status = 200, headers = {})
