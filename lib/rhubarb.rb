@@ -8,7 +8,6 @@ require "rhubarb/sqlite_model"
 require "rhubarb/controller"
 
 module Rhubarb
-
   class Application
 
     def call(env)
@@ -20,5 +19,4 @@ module Rhubarb
     end
 
   end
-
 end
